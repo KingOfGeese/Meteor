@@ -59,13 +59,13 @@ Render.String = function(X, Y, String, Shadow, Centered, Colour, Font)
     draw.SetFont(DrawingFONT);
 
     if (Shadow == true and Centered == true) then
-        draw.TextShadow(X - StringSIZE, Y, String);
+        draw.TextShadow(X - (StringSIZE / 2), Y, String);
     end
     if (Shadow == true and Centered == false) then
         draw.TextShadow(X, Y, String); 
     end
     if (Shadow == false and Centered == true) then
-        draw.Text(X - StringSIZE, Y, String); 
+        draw.Text(X - (StringSIZE / 2), Y, String); 
     end
     if (Shadow == false and Centered == false) then
         draw.Text(X, Y, String);
