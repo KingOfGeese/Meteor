@@ -1,1 +1,2 @@
--- WIP
+-- https://github.com/BigGoosie/Aimware-Luas
+-- Currently WIP
