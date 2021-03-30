@@ -1,5 +1,4 @@
 -- https://github.com/BigGoosie/Aimware-Luas
-
 Render = Render or {};
 Render.Outline = function(X, Y, Width, Height, Colour) 
 	draw.Color(Colour);
@@ -47,10 +46,11 @@ Render.Gradient = function(X, Y, Width, Height, Vertical, ColourStarting, Colour
 	end
 end
 
+local DefaultFONT = draw.CreateFont("verdana.ttf", 15, 100); 
 Render.String = function(X, Y, String, Shadow, Centered, Colour, Font)
     local DrawingFONT = Font;
     local StringSIZE = draw.GetTextSize(String);
-    if (Font == nil or DrawingFONT == nil) then DrawingFONT = draw.CreateFont("verdana.ttf", 15, 100); end
+    if (Font == nil or DrawingFONT == nil) then Font = DefaultFONT end
     if (Shadow == nil) then Shadow = false; end if (Centered == nil) then Centered = false; end
     if (Colour == nil) then Colour = { 255, 255, 255, 255 }; end
  
@@ -69,4 +69,17 @@ Render.String = function(X, Y, String, Shadow, Centered, Colour, Font)
     if (Shadow == false and Centered == false) then
         draw.Text(X, Y, String);
     end
+end
+
+Render.Circle = function(X, Y, Radius, Colour)
+    if (Colour == nil) then Colour = { 255, 255, 255, 255 }; end
+ 
+    draw.Color(Colour[1], Colour[2], Colour[3], Colour[4]);
+    draw.FilledCircle(X, Y, Radius);
+end
+Render.CircleOutline = function(X, Y, Radius, Colour)
+    if (Colour == nil) then Colour = { 255, 255, 255, 255 }; end
+ 
+    draw.Color(Colour[1], Colour[2], Colour[3], Colour[4]);
+    draw.OutlinedCircle(X, Y, Radius);
 end
