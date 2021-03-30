@@ -107,3 +107,56 @@ local Watermark = function()
     end
 end
 callbacks.Register("Draw", "Watermark", Watermark);
+-- Internal
+
+local Library_INSTALLED = false;
+file.Enumerate(function(filename)
+    if filename == "Libraries/RENDERLibrary.lua" then
+        Library_INSTALLED = true;
+    end;
+end)
+if not Library_INSTALLED then
+    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-Luas/main/Drawing-API_EXTERNAL.lua");
+    file.Write("Libraries/RENDERLibrary.lua", body);
+end
+RunScript("Libraries/RENDERLibrary.lua");
+
+local Watermark = {
+    Title = "Superman's Drawing Library";
+
+    Size = "Dynamic"; -- "Dynamic" is used for making it near the string size; For static you can set the value like 150;
+    Font = draw.CreateFont("Verdana", 15, 100);
+    Shadow = false;
+    Rounded = true;
+
+    Options = { ping = true, server = true };
+};
+
+local ScreenWIDTH, ScreenHEIGHT = draw.GetScreenSize();
+local Watermark = function()
+    if (Watermark.Size == "Dynamic") then
+        local Localplayer = entities.GetLocalPlayer();
+        local Ping = entities.GetPlayerResources():GetPropInt("m_iPing", Localplayer:GetIndex());
+        local String = Watermark.Title;
+        if (Watermark.Options["ping"] == true) then String = String .. " | Latency: " .. Ping; end
+        if (Watermark.Options["server"] == true) then String = String .. " | Server: " .. engine.GetServerIP(); end
+
+        if (Watermark.Rounded) then
+            local StringSIZE = draw.GetTextSize(String);
+            local X_Calc = ScreenWIDTH - (StringSIZE) - 5;
+
+            Render.RectangleRounded(X_Calc, 5, StringSIZE + 3, 20, 5, {5, 5, 5, 5}, {15, 15, 15, 255});
+            Render.String(X_Calc + 1, 10, String, Watermark.Shadow, false, {255, 255, 255, 255}, Watermark.Font);
+        else
+            local StringSIZE = draw.GetTextSize(String);
+            local X_Calc = ScreenWIDTH - (StringSIZE) + 5;
+
+            Render.Rectangle(X_Calc, 5, StringSIZE + 3, 20, {15, 15, 15, 255});
+            Render.String(X_Calc + 1, 10, String, Watermark.Shadow, false, {255, 255, 255, 255}, Watermark.Font);
+        end
+    else 
+
+    end
+end
+callbacks.Register("Draw", "Watermark", Watermark);
+-- External
