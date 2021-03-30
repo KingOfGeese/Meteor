@@ -1,6 +1,4 @@
 -- https://github.com/BigGoosie/Aimware-Luas
--- Currently WIP
--- Please do not run this; It will not work as of right now!
 
 Render = Render or {};
 Render.Outline = function(X, Y, Width, Height, Colour) 
