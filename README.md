@@ -8,7 +8,7 @@ file.Enumerate(function(filename)
     end;
 end)
 if not Library_INSTALLED then
-    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-Luas/main/Drawing-API_EXTERNAL.lua");
+    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-Luas/main/Drawing-API.lua");
     file.Write("Libraries/RENDERLibrary.lua", body);
 end
 RunScript("Libraries/RENDERLibrary.lua");
