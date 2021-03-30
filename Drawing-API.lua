@@ -1,4 +1,5 @@
 -- https://github.com/BigGoosie/Aimware-Luas
+
 Render = Render or {};
 Render.Outline = function(X, Y, Width, Height, Colour) 
 	draw.Color(Colour);
@@ -83,3 +84,19 @@ Render.CircleOutline = function(X, Y, Radius, Colour)
     draw.Color(Colour[1], Colour[2], Colour[3], Colour[4]);
     draw.OutlinedCircle(X, Y, Radius);
 end
+
+Colours = Colours or {};
+
+Colours.HexToRGBA = function(Hexcode)
+    Hexcode = Hexcode:gsub("#","")
+    return tonumber("0x".. Hexcode:sub(1,2)), tonumber("0x".. Hexcode:sub(3,4)), tonumber("0x".. Hexcode:sub(5,6)), tonumber("0x".. Hexcode:sub(7,8))
+end
+
+Colours.White = { 255, 255, 255, 255 };
+Colours.Black = { 0, 0, 0, 0 };
+Colours.Red = { 255, 0, 0, 255 };
+Colours.Orange = { 255, 125, 0, 255 };
+Colours.Green = { 0, 255, 0, 255 }; 
+Colours.Blue = { 0, 0, 255, 255 };
+Colours.Pink = { 255, 0, 255, 255 };
+Colours.Purple = { 127, 0, 255, 255 };
