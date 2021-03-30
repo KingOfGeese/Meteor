@@ -2,7 +2,7 @@
 -- Currently WIP
 -- Please do not run this; It will not work as of right now!
 
-local Render = {};
+Render = {};
 Render.Outline = function(X, Y, Width, Height, Colour) 
 	draw.Color(Colour);
 	draw.OutlinedRect(X, Y, X + Width, Y + Height);
