@@ -2,18 +2,6 @@
 -- Currently WIP
 -- Please do not run this; It will not work as of right now!
 
-local Library_INSTALLED = false;
-file.Enumerate(function(filename)
-    if filename == "Libraries/RENDERLibrary.lua" then
-        Library_INSTALLED = true;
-    end;
-end)
-if not Library_INSTALLED then
-    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-Luas/main/Drawing-API_EXTERNAL.lua");
-    file.Write("Libraries/RENDERLibrary.lua", body);
-end
-RunScript("Libraries/RENDERLibrary.lua");
-
 local Render = {};
 Render.Outline = function(X, Y, Width, Height, Colour) 
 	draw.Color(Colour);
