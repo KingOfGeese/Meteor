@@ -118,11 +118,13 @@ Color = {
         newColor.g = g;
         newColor.b = b;
         newColor.a = a;
+        return newColor;
     end,
 
     -- Create a new color from a hex string.
     NewFromHex = function(self, hexcode)
         hexcode = hexcode:gsub("#","")
+        hexcode = hexcode:gsub("0x","")
         local r = tonumber("0x".. hexcode:sub(1,2));
         local g = tonumber("0x".. hexcode:sub(3,4));
         local b = tonumber("0x".. hexcode:sub(5,6));
