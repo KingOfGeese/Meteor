@@ -93,7 +93,7 @@ Colours.HexToRGBA = function(Hexcode)
 end
 
 Colours.White = { 255, 255, 255, 255 };
-Colours.Black = { 0, 0, 0, 0 };
+Colours.Black = { 0, 0, 0, 255 };
 Colours.Red = { 255, 0, 0, 255 };
 Colours.Orange = { 255, 125, 0, 255 };
 Colours.Green = { 0, 255, 0, 255 }; 
