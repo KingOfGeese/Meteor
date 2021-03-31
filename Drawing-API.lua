@@ -9,6 +9,12 @@ Render.OutlineRounded = function(X, Y, Width, Height, Radius, Rounding, Colour)
 	draw.Color(Colour);
 	draw.RoundedRect(X, Y, X + Width, Y + Height, Radius, Rounding[1], Rounding[2], Rounding[3], Rounding[4]);
 end
+Render.OutlineCircle = function(X, Y, Radius, Colour)
+    if (Colour == nil) then Colour = { 255, 255, 255, 255 }; end
+ 
+    draw.Color(Colour[1], Colour[2], Colour[3], Colour[4]);
+    draw.OutlinedCircle(X, Y, Radius);
+end
 
 Render.Rectangle = function(X, Y, Width, Height, Colour)
     if (Colour == nil) then Colour = {255, 255, 255, 255}; end
@@ -77,12 +83,6 @@ Render.Circle = function(X, Y, Radius, Colour)
  
     draw.Color(Colour[1], Colour[2], Colour[3], Colour[4]);
     draw.FilledCircle(X, Y, Radius);
-end
-Render.CircleOutline = function(X, Y, Radius, Colour)
-    if (Colour == nil) then Colour = { 255, 255, 255, 255 }; end
- 
-    draw.Color(Colour[1], Colour[2], Colour[3], Colour[4]);
-    draw.OutlinedCircle(X, Y, Radius);
 end
 
 Colours = Colours or {};
