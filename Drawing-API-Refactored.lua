@@ -1,4 +1,5 @@
 -- https://github.com/BigGoosie/Aimware-Luas
+-- Thanks Clipper for better shit :D
 
 -- Private function to set the color with a failsafe.
 local function SetColor(color)
@@ -46,17 +47,17 @@ Render = {
     -- Draws a gradient rectangle, can be vertically gradiented.
     GradientRectangle = function(self, x, y, width, height, vertical, colorStart, colorEnd)
         local r, g, b = colorEnd.r, colorEnd.g, colorEnd.b;
-        self:Rectangle(x, y, width, height, colorStart);
+        self:Rectangle(x, y, width, height, 1, colorStart);
 
         if (vertical) then
             for i=1, height do
                 local a = i / height * 255;
-                self:Rectangle(x, y + i, width, 1, {r=r, g=g, b=b, a=a})
+                self:Rectangle(x, y + i, width, 1, 1, {r=r, g=g, b=b, a=a})
             end
         else
             for i=1, width do
                 local a = i / width * 255;
-                self:Rectangle(x + i, y, 1, height, {r=r, g=g, b=b, a=a})
+                self:Rectangle(x + i, y, 1, height, 1, {r=r, g=g, b=b, a=a})
             end
         end
     end,
@@ -72,6 +73,12 @@ Render = {
         end
     end,
 
+    -- Draws a line.
+    Line = function(self, x1, y1, x2, y2, color)
+        SetColor(color);
+        draw.Line(x1, y1, x2 + x1, y2 + y1);
+    end,
+
     --#endregion Geometry
 
     --#region Other
@@ -79,7 +86,7 @@ Render = {
     String = function(self, x, y, string, shadowed, centered, font, color)
         SetColor(color);
         draw.SetFont(font ~= nil and font or self.DefaultFont);
-        local stringSizeX, stringSizeY = draw.GetTextSize();
+        local stringSizeX, stringSizeY = draw.GetTextSize(string);
 
         shadowed = shadowed ~= nil and shadowed or false;
         centered = centered ~= nil and centered or false;
@@ -99,6 +106,11 @@ Render = {
         end
     end
 
+    StringSize = function(self, string, font)
+        draw.SetFont(font ~= nil and font or self.DefaultFont);
+        local x, y = draw.GetTextSize(string)
+        return { width = x, height = y };
+    end
     --#endregion Other
 }
 
