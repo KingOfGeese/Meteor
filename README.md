@@ -4,16 +4,16 @@ Copy and paste this inside of your lua script at the first line.
 local Library_INSTALLED = false;
 local Library_REWRITE = false;
 file.Enumerate(function(filename)
-    if filename == "Libraries/RENDERLibrary.lua" then
+    if filename == "Libraries/GraphicLib.lua" then
         Library_REWRITE = true;
         Library_INSTALLED = true;
     end;
 end)
 if not Library_INSTALLED or Library_REWRITE then
-    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-Libraries/main/Drawing-API-Refactored.lua");
+    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-Libraries/main/GraphicLib.lua");
     file.Write("Libraries/RENDERLibrary.lua", body);
 end
-RunScript("Libraries/RENDERLibrary.lua");
+RunScript("Libraries/GraphicLib.lua");
 ```
 ## Parameters
 Rendering should be done through a context call, for example: `Render:Rectangle(Parameters)`
