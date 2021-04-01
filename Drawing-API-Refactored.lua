@@ -104,11 +104,11 @@ Render = {
                 draw.Text(x, y, string)
             end
         end
-    end
+    end,
 
     StringSize = function(self, string, font)
         draw.SetFont(font ~= nil and font or self.DefaultFont);
-        local x, y = draw.GetTextSize(string)
+        local x, y = draw.GetTextSize(string);
         return { width = x, height = y };
     end
     --#endregion Other
