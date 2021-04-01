@@ -32,7 +32,7 @@ The self argument mustn't be passed as lua already does this using the contextua
 `Y`       : Top left corner's Y coordinate.\
 `Width`   : The width of the rounded rectangle.\
 `Height`  : The height of the rounded rectangle.\
-`Radius`  : How round the corners are.\ 
+`Radius`  : How round the corners are.\
 `Rounding`: Must be called like { Top Left Corner, Top Right Corner, Bottom Left Corner, Botton Right Corner }.\
 `Filled`  : If the value is true then the rectangle will be filled instead of the default outline.\
 `Color`   : The color object is created when using `Color:New(R, G, B, A)` Or `Color:NewFromHex(HEX)` Or `Color.White:Inbetween(Color.Black, 0.5)`.
