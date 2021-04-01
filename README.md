@@ -11,7 +11,7 @@ file.Enumerate(function(filename)
 end)
 if not Library_INSTALLED or Library_REWRITE then
     local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-Libraries/main/GraphicLib.lua");
-    file.Write("Libraries/RENDERLibrary.lua", body);
+    file.Write("Libraries/GraphicLib.lua", body);
 end
 RunScript("Libraries/GraphicLib.lua");
 ```
