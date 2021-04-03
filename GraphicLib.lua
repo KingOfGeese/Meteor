@@ -62,6 +62,12 @@ Render = {
         end
     end,
 
+    -- Draw a triangle no math it just sets the colour :D
+    Triangle = function(self, x1, y1, x2, y2, x3, y3, color)
+        SetColor(color);
+        draw.Triangle(x1, y1, x2, y2, x3, y3);
+    end
+
     -- Draws a circle.
     Circle = function(self, x, y, radius, filled, color)
         SetColor(color);
@@ -112,6 +118,15 @@ Render = {
         return { width = x, height = y };
     end
     --#endregion Other
+
+    --#region TODO
+
+    -- Multi-Color Strings
+    -- Get last string size (MAYBE)
+    -- Rectangle Parents?
+    -- Make wiki.
+
+    --#endregion TODO
 }
 
 -- Color struct definition.
