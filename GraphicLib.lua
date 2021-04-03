@@ -66,7 +66,7 @@ Render = {
     Triangle = function(self, x1, y1, x2, y2, x3, y3, color)
         SetColor(color);
         draw.Triangle(x1, y1, x2, y2, x3, y3);
-    end
+    end,
 
     -- Draws a circle.
     Circle = function(self, x, y, radius, filled, color)
