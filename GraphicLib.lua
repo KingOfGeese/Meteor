@@ -10,123 +10,327 @@ local function SetColor(color)
     end
 end
 
+local function inArea(Mouse_X, Mouse_Y, Object_X, Object_Y, Object_Width, Object_Height) 
+    if (Mouse_X >= Object_X and Mouse_X <= Object_Width) then 
+        if (Mouse_Y >= Object_Y and Mouse_Y <= Object_Height) then 
+            return true 
+        else 
+            return false 
+        end 
+    else 
+        return false 
+    end 
+end
+
+local function Area(x1, y1, x2, y2, x3, y3)
+    return Math.abs((x1*(y2-y3) + x2*(y3-y1)+ x3*(y1-y2))/2.0);
+end
+
 -- Render function
 Render = {
-    -- Default font
-    DefaultFont = draw.CreateFont("verdana", 15, 100),
+    -- #region Defaults
+        DefaultFont = draw.CreateFont("verdana", 15, 100),
+    -- #endregion Defaults
 
-    --#region Geometry
+    -- #region Globals
 
-    -- Draws a rectangle.
-    -- Available types: 1 = Filled, 2 = Shadowed, others = Default
-    Rectangle = function(self, x, y, width, height, type, color)
-        SetColor(color);
+    -- #endregion Globals
 
-        if (type == 1) then
-            draw.FilledRect(x, y, x+width, y+height);
-        elseif (type == 2) then
-            draw.ShadowRect(x, y, x+width, y+height);
-        else
-            draw.OutlinedRect(x, y, x+width, y+height);
-        end
-    end,
+    -- #region Geometry
 
-    -- Draws a rounded rectangle.
-    -- Takes radius and a 4 length table with rounding values.
-    RoundedRectangle = function(self, x, y, width, height, radius, rounding, filled, color)
-        if (rounding == nil) then rounding = {5, 5, 5, 5}; end
-        SetColor(color);
+        Rectangle = {
+            x = 0;
+            y = 0;
+            w = 0;
+            h = 0;
 
-        if (not filled) then
-            draw.RoundedRect(x, y, x+width, y+height, radius, rounding[1], rounding[2], rounding[3], rounding[4]);
-        else
-            draw.RoundedRectFill(x, y, x+width, y+height, radius, rounding[1], rounding[2], rounding[3], rounding[4]);
-        end
-    end,
+            dragging_offsetx = 0;
+            dragging_offsety = 0;
+            dragging = false;
+        
+            Create = function(self, x, y, w, h)
+                local o = {};
+                setmetatable(o, self);
+                self.__index = self;
+        
+                o.x = x;
+                o.y = y;
+                o.w = w;
+                o.h = h;
+        
+                return o;
+            end,
 
-    -- Draws a gradient rectangle, can be vertically gradiented.
-    GradientRectangle = function(self, x, y, width, height, vertical, colorStart, colorEnd)
-        local r, g, b = colorEnd.r, colorEnd.g, colorEnd.b;
-        self:Rectangle(x, y, width, height, 1, colorStart);
+            Draw = function(self, type, additions, color, ending)
+                SetColor(color);
+                if (type == 1) then
+                    draw.FilledRect(self.x, self.y, self.x + self.w, self.y + self.h); 
+                elseif (type == 2) then
+                    draw.ShadowRect(self.x, self.y, self.x + self.w, self.y + self.h, additions[1]); 
+                elseif (type == 3) then
+                    draw.RoundedRect(self.x, self.y, self.x + self.w, self.y + self.h, additions[1], additions[2], additions[3], additions[4], additions[5]);
+                elseif (type == 4) then
+                    draw.RoundedRectFill(self.x, self.y, self.x + self.w, self.y + self.h, additions[1], additions[2], additions[3], additions[4], additions[5]);
+                elseif (type == 5) then 
+                    local r, g, b = ending.r, ending.g, ending.b;
+                    local width, height = self.x + self.w, self.y + self.h;
+                    draw.FilledRect(self.x, self.y, width, height); 
+                    
+                    if (additions[1]) then
+                        for i=1, self.h do
+                            local a = i / self.h * 255;
+                            SetColor({ r=r, g=g, b=b, a=a })
+                            draw.FilledRect(self.x, self.y + i, width, self.y + i + 1); 
+                        end
+                    else 
+                        for i=1, self.w do
+                            local a = i / self.w * 255;
+                            SetColor({ r=r, g=g, b=b, a=a })
+                            draw.FilledRect(self.x + i, self.y, self.x + i + 1, self.y + self.h); 
+                        end
+                    end
+                else
+                    draw.OutlinedRect(self.x, self.y, self.x + self.w, self.y + self.h); 
+                end
+            end,
+        
+            IsClicked = function(self)
+                local mousex, mousey = input.GetMousePos(); 
+                if (inArea(mousex, mousey, self.x, self.y, self.x + self.w, self.y + self.h) and input.IsButtonDown(1)) then
+                    return true;
+                else 
+                    return false;
+                end
+            end,
+            IsHovered = function(self)
+                local mousex, mousey = input.GetMousePos(); 
+                if (inArea(mousex, mousey, self.x, self.y, self.x + self.w, self.y + self.h)) then
+                    return true;
+                else 
+                    return false;
+                end
+            end,
+            HandleDrag = function(self)
+                local mousex, mousey = input.GetMousePos(); 
 
-        if (vertical) then
-            for i=1, height do
-                local a = i / height * 255;
-                self:Rectangle(x, y + i, width, 1, 1, {r=r, g=g, b=b, a=a})
-            end
-        else
-            for i=1, width do
-                local a = i / width * 255;
-                self:Rectangle(x + i, y, 1, height, 1, {r=r, g=g, b=b, a=a})
-            end
-        end
-    end,
+                if (self.dragging and not input.IsButtonDown(1)) then
+                    self.dragging = false;
+                    self.dragging_offsetx = 0;
+                    self.dragging_offsety = 0;
+                end     
 
-    -- Draw a triangle no math it just sets the colour :D
-    Triangle = function(self, x1, y1, x2, y2, x3, y3, color)
-        SetColor(color);
-        draw.Triangle(x1, y1, x2, y2, x3, y3);
-    end,
+                if (self.dragging == true) then
+                    self.x = mousex - self.dragging_offsetx;
+                    self.y = mousey - self.dragging_offsety;
+                    return;
+                end
+    
+                if (inArea(mousex, mousey, self.x, self.y, self.x + self.w, self.y + self.h) and input.IsButtonDown(1)) then
+                    self.dragging = true;
+                    self.dragging_offsetx = mousex - self.x;
+                    self.dragging_offsety = mousey - self.y;
+                    return;
+                end
+            end,
+        },
 
-    -- Draws a circle.
-    Circle = function(self, x, y, radius, filled, color)
-        SetColor(color);
+        Circle = {
+            x = 0;
+            y = 0;
+            r = 0;
 
-        if (filled) then
-            draw.FilledCircle(x, y, radius);
-        else
-            draw.OutlinedCircle(x, y, radius);
-        end
-    end,
+            dragging_offsetx = 0;
+            dragging_offsety = 0;
+            dragging = false;
+        
+            Create = function(self, x, y, r)
+                local o = {};
+                setmetatable(o, self);
+                self.__index = self;
+        
+                o.x = x;
+                o.y = y;
+                o.r = r;
+        
+                return o;
+            end,
 
-    -- Draws a line.
-    Line = function(self, x1, y1, x2, y2, color)
-        SetColor(color);
-        draw.Line(x1, y1, x2 + x1, y2 + y1);
-    end,
+            Draw = function(self, filled, color)
+                SetColor(color);
+                if (filled) then
+                    draw.FilledCircle(self.x, self.y, self.r); 
+                else
+                    draw.OutlinedCircle(self.x, self.y, self.r); 
+                end
+            end,
 
-    --#endregion Geometry
+            IsClicked = function(self)
+                local dist = math.sqrt((self.x - mousex)^2 + (self.y - mousey)^2);
 
-    --#region Other
+                if (math.abs(dist) <= self.r and input.IsButtonDown(1)) then
+                    return true;
+                else 
+                    return false;
+                end
+            end,
+            IsHovered = function(self) 
+                local dist = math.sqrt((self.x - mousex)^2 + (self.y - mousey)^2);
 
-    String = function(self, x, y, string, shadowed, centered, font, color)
-        SetColor(color);
-        draw.SetFont(font ~= nil and font or self.DefaultFont);
-        local stringSizeX, stringSizeY = draw.GetTextSize(string);
+                if (math.abs(dist) <= self.r) then
+                    return true;
+                else 
+                    return false;
+                end
+            end,
+            HandleDrag = function(self)
+                local mousex, mousey = input.GetMousePos(); 
 
-        shadowed = shadowed ~= nil and shadowed or false;
-        centered = centered ~= nil and centered or false;
+                local dist = math.sqrt((self.x - mousex)^2 + (self.y - mousey)^2);
+                
+                if (self.dragging and not input.IsButtonDown(1)) then
+                    self.dragging = false;
+                    self.dragging_offsetx = 0;
+                    self.dragging_offsety = 0;
+                end     
 
-        if (centered) then
-            if (shadowed) then
-                draw.TextShadow(x - (stringSizeX * 0.5), y - (stringSizeY * 0.5), string)
-            else
-                draw.Text(x - (stringSizeX * 0.5), y - (stringSizeY * 0.5), string)
-            end
-        else
-            if (shadowed) then
-                draw.TextShadow(x, y, string)
-            else
-                draw.Text(x, y, string)
-            end
-        end
-    end,
+                if (self.dragging == true) then
+                    self.x = mousex - self.dragging_offsetx;
+                    self.y = mousey - self.dragging_offsety;
+                    return;
+                end
 
-    StringSize = function(self, string, font)
-        draw.SetFont(font ~= nil and font or self.DefaultFont);
-        local x, y = draw.GetTextSize(string);
-        return { width = x, height = y };
-    end
-    --#endregion Other
+                if (math.abs(dist) <= self.r and input.IsButtonDown(1)) then
+                    self.dragging = true;
+                    self.dragging_offsetx = mousex - self.x;
+                    self.dragging_offsety = mousey - self.y;
+                    return;
+                end
+            end,
+        },
 
-    --#region TODO
+        Triangle = {
+            x = 0;
+            y = 0;
+            x1 = 0;
+            y1 = 0;
+            x2 = 0;
+            y2 = 0;
 
-    -- Multi-Color Strings
-    -- Get last string size (MAYBE)
-    -- Rectangle Parents?
-    -- Make wiki.
+            dragging_offsetx = 0;
+            dragging_offsety = 0;
+            dragging = false;
+        
+            Create = function(self, x, y, x1, y1, x2, y2)
+                local o = {};
+                setmetatable(o, self);
+                self.__index = self;
+        
+                o.x = x;
+                o.y = y;
+                o.x1 = x1;
+                o.y1 = y1;
+                o.x2 = x2;
+                o.y2 = y2;
+        
+                return o;
+            end,
 
-    --#endregion TODO
+            Draw = function(self, color)
+                SetColor(color);
+                draw.Triangle(self.x, self.y, self.x1, self.y1, self.x2, self.y2); 
+            end,
+
+            --[[HandleDrag = function(self)
+                local CenterX = (self.x + self.x1 + self.x3) / 3;
+                local CenterY = (self.y + self.y1 + self.y3) / 3;
+
+                local Area1 = Area(CenterX, CenterY, self.x1, self.y1, self.x2, self.y2);
+                local Area2 = Area(CenterX, CenterY, self.x1, self.y1, self.x2, self.y2);
+                local Area3 = Area(self.x, self.y, CenterX, CenterY, self.x2, self.y2);
+                local Area4 = Area(self.x, self.y, self.x1, self.y1, CenterX, CenterY);
+            end,]]
+        },
+
+        Line = {
+            x = 0;
+            y = 0;
+            l = 0;
+            a = 0;
+
+            dragging_offsetx = 0;
+            dragging_offsety = 0;
+            dragging = false;
+        
+            Create = function(self, x, y, l, a)
+                local o = {};
+                setmetatable(o, self);
+                self.__index = self;
+        
+                o.x = x;
+                o.y = y;
+                o.l = l;
+                o.a = a;
+        
+                return o;
+            end,
+
+            Draw = function(self, color)
+                SetColor(color);
+                draw.Line(self.x, self.y, self.x + self.l, self.y + self.a); 
+            end,
+        },
+
+        String = {
+            x = 0;
+            y = 0;
+            s = 0;
+
+            dragging_offsetx = 0;
+            dragging_offsety = 0;
+            dragging = false;
+        
+            Create = function(self, x, y, s)
+                local o = {};
+                setmetatable(o, self);
+                self.__index = self;
+        
+                o.x = x;
+                o.y = y;
+                o.s = s;
+        
+                return o;
+            end,
+
+            Size = function(self, s, font)
+                draw.SetFont(font ~= nil and font or Render.DefaultFont);
+                local x, y = draw.GetTextSize(s ~= nil and s or self.s);
+                return { width = x, height = y };
+            end,
+
+            Draw = function(self, shadow, centered, font, color)
+                SetColor(color);
+                draw.SetFont(font ~= nil and font or Render.DefaultFont);
+                local stringSizeX, stringSizeY = draw.GetTextSize(self.s);
+                shadowed = shadowed ~= nil and shadowed or false;
+                centered = centered ~= nil and centered or false;
+
+                if (centered) then
+                    if (shadowed) then
+                        draw.TextShadow(self.x - (stringSizeX * 0.5), y, self.s);
+                    else
+                        draw.Text(self.x - (stringSizeX * 0.5), y, self.s);
+                    end
+                else
+                    if (shadowed) then
+                        draw.TextShadow(self.x, self.y, self.s);
+                    else
+                        draw.Text(self.x, self.y, self.s); 
+                    end
+                end
+            end,
+        },
+
+    -- #endregion Geometry
 }
 
 -- Color struct definition.
