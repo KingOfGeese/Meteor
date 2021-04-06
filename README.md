@@ -19,7 +19,9 @@ RunScript("Libraries/GraphicLib.lua");
 Paste it on the first line; you will only need to do this once
 
 ## Rendering
+
 In order to render something you will need to define it like:
+### Rectangles
 ```lua
 local Rectangle = Render.Rectangle:Create(x, y, w, h);
 callbacks.Register("Draw", function()
