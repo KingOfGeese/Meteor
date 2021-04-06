@@ -24,8 +24,13 @@ local function Round(num, numDecimalPlaces)
     return math.floor(num * mult + 0.5) / mult
 end
 
+local ScreenX, ScreenY = draw.GetScreenSize();
+
+local WatermarkOUTLINE = Render.Rectangle:Create(0, 0, 100, 22);
+local WatermarkBACKGROUND = Render.Rectangle:Create(0, 0, 100, 20);
+local WatermarkSTRING = Render.String:Create(0, 0, "Something Went Really Wrong...");
+
 local function DrawWatermark() 
-    local ScreenX, ScreenY = draw.GetScreenSize();
     local Localplayer, LocalplayerIndex, LocalplayerVALID = entities.GetLocalPlayer(), client.GetLocalPlayerIndex(), false;
     if (Localplayer ~= nil) then LocalplayerVALID = true; end
 
@@ -37,12 +42,32 @@ local function DrawWatermark()
         Round(math.sqrt(Localplayer:GetPropFloat("localdata", "m_vecVelocity[0]") ^ 2 + Localplayer:GetPropFloat("localdata", "m_vecVelocity[1]") ^ 2), 0)
         or "0";
 
-    local WatermarkSTRING = "Graphic Lib Demo | Velocity " .. Velocity .. " | Server " .. Getserver() .. " | Latency " .. Latency;
-    local Width = Render:StringSize(WatermarkSTRING).width + 5; -- Leaving the font nil will make the lib use the default font...
-    local X, Y = (ScreenX) - Width - 5, 5
+    local col1 = Color:New(gui.GetValue("esp.visualTab.mainCol1"));
+    local col2 = Color:New(gui.GetValue("esp.visualTab.mainCol2"));
+    local String2Calc = "nxzUI v4 [DEV] | Velocity " .. Velocity .. " | Server " .. Getserver() .. " | Latency " .. Latency;
+    WatermarkSTRING.s = String2Calc;
+    local StringSIZE = WatermarkSTRING:Size().width + 5;
+    local X, Y = (ScreenX) - StringSIZE - 5, 5
 
-    Render:GradientRectangle(X - 1, Y - 1, Width + 1, 22, false, Color.Pink, Color.Purple);
-    Render:Rectangle(X, Y, Width, 20, 1, Color:New(15, 15, 15, 255));
-    Render:String   (X + 2, Y + 5, WatermarkSTRING, true, false);
+    WatermarkOUTLINE.x = X - 1;
+    WatermarkOUTLINE.y = Y - 1;
+    WatermarkOUTLINE.w = StringSIZE + 1;
+
+    WatermarkBACKGROUND.x = X;
+    WatermarkBACKGROUND.y = Y;
+    WatermarkBACKGROUND.w = StringSIZE;
+
+    WatermarkSTRING.x = X + 2;
+    WatermarkSTRING.y = Y + 5;
+
+    WatermarkOUTLINE:Draw(5, { false --[[ Vertical or not ]] }, col1, col2);
+    WatermarkBACKGROUND:Draw(1, { false --[[ No need for this but what ever ]] }, Color:New(15, 15, 15, 255));
+    WatermarkSTRING:Draw(true, false); -- [[ Using no font / color will use the defaults... ]]
+
+    --[[
+        WatermarkOUTLINE:HandleDrag();
+        WatermarkBACKGROUND:HandleDrag();
+        
+    ]] -- Won't work because the x and y are always being redefined, will fix it on the 8th. I have planning shit to do; for the 7th
 end
 callbacks.Register("Draw", DrawWatermark);
