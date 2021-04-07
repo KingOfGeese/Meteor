@@ -25,10 +25,12 @@ local function Round(num, numDecimalPlaces)
 end
 
 local ScreenX, ScreenY = draw.GetScreenSize();
+local SetX, SetY = false, false;
 
 local WatermarkOUTLINE = Render.Rectangle:Create(0, 0, 100, 22);
 local WatermarkBACKGROUND = Render.Rectangle:Create(0, 0, 100, 20);
 local WatermarkSTRING = Render.String:Create(0, 0, "Something Went Really Wrong...");
+local X, Y = 0, 0;
 
 local function DrawWatermark() 
     local Localplayer, LocalplayerIndex, LocalplayerVALID = entities.GetLocalPlayer(), client.GetLocalPlayerIndex(), false;
@@ -42,32 +44,41 @@ local function DrawWatermark()
         Round(math.sqrt(Localplayer:GetPropFloat("localdata", "m_vecVelocity[0]") ^ 2 + Localplayer:GetPropFloat("localdata", "m_vecVelocity[1]") ^ 2), 0)
         or "0";
 
-    local col1 = Color:New(gui.GetValue("esp.visualTab.mainCol1"));
-    local col2 = Color:New(gui.GetValue("esp.visualTab.mainCol2"));
-    local String2Calc = "nxzUI v4 [DEV] | Velocity " .. Velocity .. " | Server " .. Getserver() .. " | Latency " .. Latency;
+    local String2Calc = "Meteor LIB Example | Velocity " .. Velocity .. " | Server " .. Getserver() .. " | Latency " .. Latency;
     WatermarkSTRING.s = String2Calc;
     local StringSIZE = WatermarkSTRING:Size().width + 5;
-    local X, Y = (ScreenX) - StringSIZE - 5, 5
+    if (not SetX and not SetY) then
+        X, Y = (ScreenX) - StringSIZE - 5, 5;
+        SetX, SetY = true, true;
+    end
 
-    WatermarkOUTLINE.x = X - 1;
-    WatermarkOUTLINE.y = Y - 1;
-    WatermarkOUTLINE.w = StringSIZE + 1;
+    if (not WatermarkOUTLINE:IsClicked()) then 
+        WatermarkOUTLINE.x = X - 1;
+        WatermarkOUTLINE.y = Y - 1;
+        WatermarkOUTLINE.w = StringSIZE + 1;
+    
+        WatermarkBACKGROUND.x = WatermarkOUTLINE.x + 1;
+        WatermarkBACKGROUND.y = WatermarkOUTLINE.y + 1;
+        WatermarkBACKGROUND.w = StringSIZE;
+    
+        WatermarkSTRING.x = WatermarkBACKGROUND.x + 2;
+        WatermarkSTRING.y = WatermarkBACKGROUND.y + 5;
+    else 
+        X = WatermarkOUTLINE.x;
+        Y = WatermarkOUTLINE.y;
 
-    WatermarkBACKGROUND.x = X;
-    WatermarkBACKGROUND.y = Y;
-    WatermarkBACKGROUND.w = StringSIZE;
+        WatermarkBACKGROUND.x = WatermarkOUTLINE.x + 1;
+        WatermarkBACKGROUND.y = WatermarkOUTLINE.y + 1;
+        WatermarkBACKGROUND.w = StringSIZE;
 
-    WatermarkSTRING.x = X + 2;
-    WatermarkSTRING.y = Y + 5;
+        WatermarkSTRING.x = WatermarkBACKGROUND.x + 2;
+        WatermarkSTRING.y = WatermarkBACKGROUND.y + 5;
+    end
 
-    WatermarkOUTLINE:Draw(5, { false --[[ Vertical or not ]] }, col1, col2);
+    WatermarkOUTLINE:Draw(5, { false --[[ Vertical or not ]] }, Color.Purple, Color.Blue);
     WatermarkBACKGROUND:Draw(1, { false --[[ No need for this but what ever ]] }, Color:New(15, 15, 15, 255));
     WatermarkSTRING:Draw(true, false); -- [[ Using no font / color will use the defaults... ]]
 
-    --[[
-        WatermarkOUTLINE:HandleDrag();
-        WatermarkBACKGROUND:HandleDrag();
-        
-    ]] -- Won't work because the x and y are always being redefined, will fix it on the 8th. I have planning shit to do; for the 7th
+    WatermarkOUTLINE:HandleDrag(); -- Only need the drag for the gradient; due to it being the largest rectangle being drawn.
 end
 callbacks.Register("Draw", DrawWatermark);
