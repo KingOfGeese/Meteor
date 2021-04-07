@@ -11,7 +11,7 @@ file.Enumerate(function(filename)
     end;
 end)
 if not Library_INSTALLED or Library_REWRITE then
-    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-GraphicLib/main/GraphicLib.lua");
+    local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Meteor/main/Meteor.lua");
     file.Write("Libraries/Meteor.lua", body);
 end
 RunScript("Libraries/Meteor.lua");
