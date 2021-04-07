@@ -1,5 +1,5 @@
--- https://github.com/BigGoosie/Aimware-Luas
--- Thanks Clipper for better shit :D
+-- https://github.com/BigGoosie/Meteor
+-- Refer to the wiki if you want to learn; It will be hard to learn from the code considering its compact.
 
 -- Private function to set the color with a failsafe.
 local function SetColor(color)
