@@ -5,16 +5,16 @@ Copy this snipet of code
 local Library_INSTALLED = false;
 local Library_REWRITE = false;
 file.Enumerate(function(filename)
-    if filename == "Libraries/GraphicLib.lua" then
+    if filename == "Libraries/Meteor.lua" then
         Library_REWRITE = true;
         Library_INSTALLED = true;
     end;
 end)
 if not Library_INSTALLED or Library_REWRITE then
     local body = http.Get("https://raw.githubusercontent.com/BigGoosie/Aimware-GraphicLib/main/GraphicLib.lua");
-    file.Write("Libraries/GraphicLib.lua", body);
+    file.Write("Libraries/Meteor.lua", body);
 end
-RunScript("Libraries/GraphicLib.lua");
+RunScript("Libraries/Meteor.lua");
 ```
 Paste it on the first line; you will only need to do this once
 
